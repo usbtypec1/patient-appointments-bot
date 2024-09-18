@@ -1,1 +1,1 @@
-from . import patients
+from . import add_patient
