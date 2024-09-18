@@ -1,6 +1,5 @@
 from datetime import date, datetime
 
-from pydantic import TypeAdapter
 from sqlalchemy import select
 
 from db.models import PatientAppointment
@@ -17,7 +16,7 @@ class PatientAppointmentRepository(DatabaseRepository):
             *,
             patient_full_name: str,
             patient_born_on: date,
-    ):
+    ) -> PatientAppointmentDTO:
         patient_appointment = PatientAppointment(
             patient_full_name=patient_full_name,
             patient_born_on=patient_born_on,
@@ -25,12 +24,18 @@ class PatientAppointmentRepository(DatabaseRepository):
         self._session.add(patient_appointment)
         await self._session.commit()
 
+        return PatientAppointmentDTO(
+            patient_full_name=patient_appointment.patient_full_name,
+            patient_born_on=patient_appointment.patient_born_on,
+            created_at=patient_appointment.created_at,
+        )
+
     async def get_created_at_between(
             self,
             *,
             from_datetime: datetime,
             to_datetime: datetime,
-    ) -> tuple[PatientAppointmentDTO, ...]:
+    ) -> list[PatientAppointmentDTO]:
         statement = (
             select(PatientAppointment)
             .where(
@@ -41,5 +46,11 @@ class PatientAppointmentRepository(DatabaseRepository):
         )
         patient_appointments = await self._session.scalars(statement)
 
-        type_adapter = TypeAdapter(tuple[PatientAppointmentDTO, ...])
-        return type_adapter.validate_python(patient_appointments)
+        return [
+            PatientAppointmentDTO(
+                patient_full_name=patient_appointment.patient_full_name,
+                patient_born_on=patient_appointment.patient_born_on,
+                created_at=patient_appointment.created_at,
+            )
+            for patient_appointment in patient_appointments
+        ]
