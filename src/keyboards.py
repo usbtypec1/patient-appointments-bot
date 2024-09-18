@@ -8,7 +8,7 @@ MAIN_MENU_REPLY_MARKUP = ReplyKeyboardMarkup(
             KeyboardButton(text='Добавить пациента'),
         ],
         [
-            KeyboardButton(text='Сегодня'),
+            KeyboardButton(text='Пациенты сегодня'),
             KeyboardButton(text='Текущая неделя'),
         ],
     ],
