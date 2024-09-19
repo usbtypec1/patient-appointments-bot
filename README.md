@@ -32,6 +32,8 @@ Later doctors can overview all appointments for current day and current week.
 
 ## 4. How to Run Tests
 
+It is recommended to use virtualenv rather than using global python interpreter.
+
 To run the tests, first ensure all test dependencies are installed. You can install them with:
 
 ```bash
