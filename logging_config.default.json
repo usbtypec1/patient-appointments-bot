@@ -36,6 +36,13 @@
         "file"
       ],
       "propagate": false
+    },
+    "repository": {
+      "level": "DEBUG",
+      "handlers": [
+        "console"
+      ],
+      "propogate": false
     }
   }
 }

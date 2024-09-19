@@ -1,1 +1,1 @@
-from . import add_patient, start, patients_today
+from . import add_patient, start, patients_today, weekly_patients

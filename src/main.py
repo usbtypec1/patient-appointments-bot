@@ -30,8 +30,9 @@ async def on_shutdown(engine: AsyncEngine):
 def include_handlers(dispatcher: Dispatcher) -> None:
     dispatcher.include_routers(
         handlers.start.router,
-        handlers.add_patient.router,
         handlers.patients_today.router,
+        handlers.weekly_patients.router,
+        handlers.add_patient.router,
     )
     logger.info('Handlers set up')
 
