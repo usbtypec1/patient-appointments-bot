@@ -1,5 +1,6 @@
 from aiogram import F, Router
 from aiogram.filters import StateFilter
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from formatters import format_weekly_appointments_count
@@ -17,8 +18,10 @@ router = Router(name=__name__)
 )
 async def on_show_weekly_patients(
         message: Message,
+        state: FSMContext,
         patient_appointment_repository: PatientAppointmentRepository,
 ) -> None:
+    await state.clear()
     service = PatientAppointmentsService(patient_appointment_repository)
     appointments_count = await service.get_appointments_count_for_current_week()
     text = format_weekly_appointments_count(appointments_count)

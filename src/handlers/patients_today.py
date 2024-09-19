@@ -1,5 +1,6 @@
 from aiogram import F, Router
 from aiogram.filters import StateFilter
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from formatters import format_today_patient_appointments_list
@@ -17,7 +18,9 @@ router = Router(name=__name__)
 async def on_show_patients_today_list(
         message: Message,
         patient_appointment_repository: PatientAppointmentRepository,
+        state: FSMContext,
 ) -> None:
+    await state.clear()
     service = PatientAppointmentsService(patient_appointment_repository)
     patient_appointments = await service.get_today_patient_appointments()
     text = format_today_patient_appointments_list(patient_appointments)
