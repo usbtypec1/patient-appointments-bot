@@ -6,7 +6,11 @@ from exceptions import (
     PatientNameContainsPunctuationError,
     PatientTooOldError,
 )
-from models import PatientAppointmentDTO
+from models import (
+    DailyPatientAppointmentsCountDTO,
+    PatientAppointmentDTO,
+    Period,
+)
 from repositories.patient_appointments import PatientAppointmentRepository
 
 __all__ = (
@@ -16,6 +20,13 @@ __all__ = (
     'parse_date',
     'validate_full_name',
 )
+
+
+def get_current_week_period() -> Period:
+    today = datetime.utcnow().today()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+    return Period(start=start_of_week.date(), end=end_of_week.date())
 
 
 def contains_punctuation(text: str) -> bool:
@@ -109,4 +120,13 @@ class PatientAppointmentsService:
         return await self.__repository.get_created_at_between(
             from_datetime=from_datetime,
             to_datetime=to_datetime,
+        )
+
+    async def get_appointments_count_for_current_week(
+            self,
+    ) -> list[DailyPatientAppointmentsCountDTO]:
+        period = get_current_week_period()
+        return await self.__repository.count_by_days(
+            from_date=period.start,
+            to_date=period.end,
         )

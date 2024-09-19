@@ -3,25 +3,26 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from formatters import format_today_patient_appointments_list
+from formatters import format_weekly_appointments_count
 from repositories.patient_appointments import PatientAppointmentRepository
 from services import PatientAppointmentsService
 
 __all__ = ('router',)
+
 router = Router(name=__name__)
 
 
 @router.message(
-    F.text == 'Пациенты сегодня',
+    F.text == 'Текущая неделя',
     StateFilter('*'),
 )
-async def on_show_patients_today_list(
+async def on_show_weekly_patients(
         message: Message,
-        patient_appointment_repository: PatientAppointmentRepository,
         state: FSMContext,
+        patient_appointment_repository: PatientAppointmentRepository,
 ) -> None:
     await state.clear()
     service = PatientAppointmentsService(patient_appointment_repository)
-    patient_appointments = await service.get_today_patient_appointments()
-    text = format_today_patient_appointments_list(patient_appointments)
+    appointments_count = await service.get_appointments_count_for_current_week()
+    text = format_weekly_appointments_count(appointments_count)
     await message.answer(text)
